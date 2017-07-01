@@ -7,9 +7,8 @@
 # Source: Github- https://github.com/PowerKG/HyperMarket
 # 想要联系我?(Wanna contact me?) @邮箱(email):end_kg@126.com  @QQ:137391258
 
-
 #Language File
-#语言文本(位于lanuages内的问题)
+#语言文本(位于lang内的问题)
 language: zh_CN.yml
 
 Setting:
@@ -30,11 +29,9 @@ Setting:
   MailBoxLimitItem: 10
   #最多可以暂存多少消息信件
   MailBoxLimitPost: 30
-  
+
 #市场税率
 Tax:
   #是否开启发布税率
   EnablePublish: True
   PublishTax: 0.05
-  
- 

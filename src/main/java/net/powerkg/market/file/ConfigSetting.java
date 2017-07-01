@@ -9,7 +9,7 @@ public class ConfigSetting {
     public final String head;
 
     public final Boolean UsePageCache = false, AllowColorfulDescription = true;
-    public final String DefaultDescriptionFont = null, DateFormat = null;
+    public final String DefaultDescriptionFont = null, DateFormat = "a hh:mm yyyy.MM.dd";
 
     ConfigSetting(Class<?> clazz, FileConfiguration config, String head) {
         this.head = head;

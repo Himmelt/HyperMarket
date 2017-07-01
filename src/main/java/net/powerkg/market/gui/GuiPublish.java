@@ -13,50 +13,40 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GuiPublish extends EasyGui
-{
+public class GuiPublish extends EasyGui {
+    private HashMap<Integer, IPublishType> typeMap = new HashMap<>();
 
-	private HashMap<Integer, IPublishType> typeMap = new HashMap<>();
+    public GuiPublish(Player p) {
+        super(p);
 
-	public GuiPublish(Player p)
-	{
-		super(p);
-
-		ArrayList<IPublishType> types = MarketHandler.getPublishTypes();
-		int needrow = types.size() / 9 + (types.size() % 9 == 0 ? 0 : 1);
+        ArrayList<IPublishType> types = MarketHandler.getPublishTypes();
+        int needrow = types.size() / 9 + (types.size() % 9 == 0 ? 0 : 1);
         inv = Bukkit.createInventory(null, needrow * 9, "§9§l" + MarketConfig.translate("infoWantToPublish"));
 
-		for (int i = 0; i < (types.size() > 54 ? 54 : types.size()); i++)
-		{
-			IPublishType type = types.get(i);
-			typeMap.put(i, types.get(i));
-			inv.setItem(i, type.getDisplay());
-		}
-	}
+        for (int i = 0; i < (types.size() > 54 ? 54 : types.size()); i++) {
+            IPublishType type = types.get(i);
+            typeMap.put(i, types.get(i));
+            inv.setItem(i, type.getDisplay());
+        }
+    }
 
-	@Override
-	public void onVerifiedEvent(InventoryClickEvent event)
-	{
-		event.setCancelled(true);
-		int slot = event.getRawSlot();
+    @Override
+    public void onVerifiedEvent(InventoryClickEvent event) {
+        event.setCancelled(true);
+        int slot = event.getRawSlot();
 
-		if (typeMap.containsKey(slot))
-		{
-			close();
-			typeMap.get(slot).whenTryPublish(getUser());
-		}
-	}
+        if (typeMap.containsKey(slot)) {
+            close();
+            typeMap.get(slot).whenTryPublish(getUser());
+        }
+    }
 
-	@Override
-	public void onClose(InventoryCloseEvent event)
-	{
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+    }
 
-	}
-
-	@Override
-	public void onOpen(InventoryOpenEvent event)
-	{
-
-	}
+    @Override
+    public void onOpen(InventoryOpenEvent event) {
+    }
 
 }

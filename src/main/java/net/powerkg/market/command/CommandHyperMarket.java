@@ -13,8 +13,8 @@ public class CommandHyperMarket implements CommandExecutor {
     private static CommandHyperMarket cmd = new CommandHyperMarket();
 
     public static void load() {
-        Bukkit.getServer().getPluginCommand("HyperMarket").setExecutor(cmd);
-        Bukkit.getServer().getPluginCommand("HM").setExecutor(cmd);
+        Bukkit.getServer().getPluginCommand("hypermarket").setExecutor(cmd);
+        Bukkit.getServer().getPluginCommand("hm").setExecutor(cmd);
     }
 
     @Override
@@ -32,8 +32,6 @@ public class CommandHyperMarket implements CommandExecutor {
                 new GuiMailBox(p).show();
             }
         }
-
         return false;
     }
-
 }

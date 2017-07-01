@@ -57,7 +57,7 @@ public abstract class ICargo
 		if (publishType != null)
 			publishType.whenCargoClick(this, user, isRightClick);
 		else
-			CommonPublishment.instance.whenCargoClick(this, user, isRightClick);
+			CommonPublish.instance.whenCargoClick(this, user, isRightClick);
 	}
 	
 	public Date getPublishTime()

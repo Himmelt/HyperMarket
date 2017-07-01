@@ -70,18 +70,17 @@ public class MarketConfig implements HyperHandler {
         setting = new ConfigSetting(config);
         taxSetting = new TaxSetting(config);
 
-        dateFormat = new SimpleDateFormat((setting.DateFormat != null ? setting.DateFormat : "a hh:mm yyyy.MM.dd"));
+        dateFormat = new SimpleDateFormat(setting.DateFormat);
     }
 
     /**
      * 保存全部语言文件到本地中
      **/
     private static void saveDefLanuageFile(Plugin plugin) {
-        File lanuageFile = new File(plugin.getDataFolder() + "/lang");
-        if (!lanuageFile.exists()) {
-            lanuageFile.mkdir();
-
-            plugin.saveResource(lanuageFile.getPath().replace("plugins\\" + HyperMarket.getInstance().getName() + "\\", "") + "/zh_CN.yml", false);
+        File langFile = new File(plugin.getDataFolder() + "/lang");
+        if (!langFile.exists()) {
+            langFile.mkdir();
+            plugin.saveResource(langFile.getPath().replace("plugins\\" + HyperMarket.getInstance().getName() + "\\", "") + "/zh_CN.yml", false);
         }
     }
 

@@ -11,132 +11,114 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Date;
 
-public class MailItem extends IMail
-{
+public class MailItem extends IMail {
+    private static ItemStack defDisplay = new ItemStack(Material.STORAGE_MINECART);
 
-	private static ItemStack defDisplay = new ItemStack(Material.STORAGE_MINECART);
+    private ItemStack inItem;
 
-	private ItemStack inItem;
+    private int Amount;
+    private double Cost;
 
-	private int Amount;
-	private double Cost;
+    private ItemStack ownShow = null;
 
-	private ItemStack ownShow = null;
+    private String Sender = null;
 
-	private String Sender = null;
+    private boolean IsTrade = false;
 
-	private boolean IsTrade = false;
+    public MailItem(String sender, int amount, ItemStack item, Date theData) {
+        date = theData;
+        this.inItem = item;
+        this.Sender = sender;
+        this.Amount = amount;
+    }
 
-	public MailItem(String sender, int amount, ItemStack item, Date theData)
-	{
-		date = theData;
-		this.inItem = item;
-		this.Sender = sender;
-		this.Amount = amount;
-	}
+    public MailItem(String sender, Boolean isTrade, double cost, int amount, ItemStack item, Date theData) {
+        this(sender, amount, item, theData);
+        this.IsTrade = isTrade;
+        this.Cost = cost;
+    }
 
-	public MailItem(String sender, Boolean isTrade, double cost, int amount, ItemStack item, Date theData)
-	{
-		this(sender, amount, item, theData);
-		this.IsTrade = isTrade;
-		this.Cost = cost;
-	}
+    public MailItem() {
+    }
 
-	public MailItem()
-	{
-	}
-
-	private ItemStack loadDisplay()
-	{
-		if (ownShow == null)
-		{
-			ownShow = defDisplay.clone();
+    private ItemStack loadDisplay() {
+        if (ownShow == null) {
+            ownShow = defDisplay.clone();
             Tools.setItemStack(ownShow, "§f" + MarketConfig.translate("Topic") + ": " + MarketConfig.translate("infoReceivedItem"), null);
 
-			String tradeInfo = null;
-			if (IsTrade)
+            String tradeInfo = null;
+            if (IsTrade)
                 tradeInfo = " §f§l| §f§o§l" + MarketConfig.translate("infoReplaceableMailItemBuy").replaceAll("%Cost", "" + Cost).replaceAll("%Seller", "" + Sender);
 
             Tools.addItemStackLore(ownShow, (IsTrade ? null : "§f〢§l" + MarketConfig.translate("Sender") + ": " + Sender), "", tradeInfo, " §f§l| §f§o" + MarketConfig.translate("infoContainInside"),
                     " §f§l- §9" + Amount + " " + MarketConfig.translate("Part") + " " + Tools.toInfo(inItem));
 
-			stickInfo(ownShow);
+            stickInfo(ownShow);
             Tools.addItemStackLore(ownShow, "§e§o(" + MarketConfig.translate("infoRightClickToConfirmDelete") + ")", "§e§o<" + MarketConfig.translate("infoGetWhenConfirm") + ">");
         }
-		return ownShow;
-	}
+        return ownShow;
+    }
 
-	@Override
-	public boolean click(Player player, boolean isRightClick)
-	{
-		if (isRightClick)
-		{
-			int maxStack = inItem.getMaxStackSize();
+    @Override
+    public boolean click(Player player, boolean isRightClick) {
+        if (isRightClick) {
+            int maxStack = inItem.getMaxStackSize();
 
-			int total = inItem.getAmount() * Amount;
+            int total = inItem.getAmount() * Amount;
 
-			int needEmpty = (total / maxStack) + (total % maxStack == 0 ? 0 : 1);
+            int needEmpty = (total / maxStack) + (total % maxStack == 0 ? 0 : 1);
 
-			int empty = 0;
+            int empty = 0;
 
-			ItemStack[] inventory = player.getInventory().getContents();
-			for (int i = 0; i < inventory.length; ++i)
-			{
-				if (inventory[i] == null)
-				{
-					++empty;
-				}
-			}
+            ItemStack[] inventory = player.getInventory().getContents();
+            for (ItemStack anInventory : inventory) {
+                if (anInventory == null) {
+                    ++empty;
+                }
+            }
 
-			if (empty >= needEmpty)
-			{
-				for (int i = 0; i < Amount; i++)
-				{
-					player.getInventory().addItem(inItem);
-				}
-				inBox.deleteMail(this);
-				return false;
-			} else
-			{
+            if (empty >= needEmpty) {
+                for (int i = 0; i < Amount; i++) {
+                    player.getInventory().addItem(inItem);
+                }
+                inBox.deleteMail(this);
+                return false;
+            } else {
                 GuiHint.hint(player, "§c" + MarketConfig.translate("errLackInventory"), new GuiMailBox(player));
                 return false;
-			}
-		}
-		return true;
-	}
+            }
+        }
+        return true;
+    }
 
-	@Override
-	public void write(String path, FileConfiguration file)
-	{
-		file.set(path + ".Date", date.getTime());
-		file.set(path + ".Sender", Sender);
-		file.set(path + ".IsTrade", IsTrade);
-		file.set(path + ".Cost", Cost);
-		file.set(path + ".Amount", Amount);
-		file.set(path + ".Item", inItem);
-	}
+    @Override
+    public void write(String path, FileConfiguration file) {
+        file.set(path + ".Date", date.getTime());
+        file.set(path + ".Sender", Sender);
+        file.set(path + ".IsTrade", IsTrade);
+        file.set(path + ".Cost", Cost);
+        file.set(path + ".Amount", Amount);
+        file.set(path + ".Item", inItem);
+    }
 
-	@Override
-	public void read(String path, FileConfiguration file)
-	{
-		date = new Date(file.getLong(path + ".Date"));
-		Sender = file.getString(path + ".Sender");
-		IsTrade = file.getBoolean(path + "IsTrade");
-		Cost = file.getDouble(path + ".Cost");
-		Amount = file.getInt(path + ".Amount");
-		inItem = file.getItemStack(path + ".Item");
-	}
+    @Override
+    public void read(String path, FileConfiguration file) {
+        date = new Date(file.getLong(path + ".Date"));
+        Sender = file.getString(path + ".Sender");
+        IsTrade = file.getBoolean(path + "IsTrade");
+        Cost = file.getDouble(path + ".Cost");
+        Amount = file.getInt(path + ".Amount");
+        inItem = file.getItemStack(path + ".Item");
+    }
 
-	@Override
-	public String getMark()
-	{
-		return this.getClass().getSimpleName();
-	}
+    @Override
+    public String getMark() {
+        return this.getClass().getSimpleName();
+    }
 
-	@Override
-	public ItemStack getDisplay()
-	{
-		return loadDisplay();
-	}
+    @Override
+    public ItemStack getDisplay() {
+        return loadDisplay();
+    }
 
 }

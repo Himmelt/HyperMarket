@@ -15,15 +15,14 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.Collections;
 
-public class GuiCommonBuy extends EasyGui
-{
+public class GuiCommonBuy extends EasyGui {
 
-	public static final ItemStack sp = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15), add = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5),
-			remove = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14), confirm = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 1);
+    public static final ItemStack sp = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15), add = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5),
+            remove = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14), confirm = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 1);
 
-	static
-	{
+    static {
         Tools.setItemStack(sp, "§c" + MarketConfig.translate("GuiBuyHint"), null);
 
         Tools.setItemStack(add, "§2" + MarketConfig.translate("AddBuyAmount"), null);
@@ -32,95 +31,84 @@ public class GuiCommonBuy extends EasyGui
         Tools.setItemStack(confirm, "§6§l" + MarketConfig.translate("ConfirmToBuy"), null);
     }
 
-	private int amount = 1;
-	private ICargo cargo;
+    private int amount = 1;
+    private ICargo cargo;
 
-	public GuiCommonBuy(ICargo cargo, Player p)
-	{
-		super(p);
+    public GuiCommonBuy(ICargo cargo, Player p) {
+        super(p);
 
-		this.cargo = cargo;
+        this.cargo = cargo;
         inv = Bukkit.createInventory(null, 9, "§c" + MarketConfig.translate("Buy"));
 
-		inv.setItem(0, cargo.getDisplay());
-		inv.setItem(1, sp);
+        inv.setItem(0, cargo.getDisplay());
+        inv.setItem(1, sp);
 
-		refreshButton();
-	}
+        refreshButton();
+    }
 
-	public void refreshButton()
-	{
-		ItemStack newAdd = add.clone();
-        Tools.setItemStack(newAdd, null, Arrays.asList("§9<" + MarketConfig.translate("NowBuyAmount") + ": §6§l" + amount + "§9 >"));
+    public void refreshButton() {
+        ItemStack newAdd = add.clone();
+        Tools.setItemStack(newAdd, null, Collections.singletonList("§9<" + MarketConfig.translate("NowBuyAmount") + ": §6§l" + amount + "§9 >"));
         inv.setItem(2, newAdd);
 
-		ItemStack newRemove = remove.clone();
-        Tools.setItemStack(newRemove, null, Arrays.asList("§9<" + MarketConfig.translate("NowBuyAmount") + ": §6§l" + amount + "§9 >"));
+        ItemStack newRemove = remove.clone();
+        Tools.setItemStack(newRemove, null, Collections.singletonList("§9<" + MarketConfig.translate("NowBuyAmount") + ": §6§l" + amount + "§9 >"));
         inv.setItem(3, newRemove);
 
-		ItemStack newConfirm = confirm.clone();
-		Tools.setItemStack(newConfirm, null,
+        ItemStack newConfirm = confirm.clone();
+        Tools.setItemStack(newConfirm, null,
                 Arrays.asList("§6§l" + MarketConfig.translate("Total") + " §6§l" + amount + " " + MarketConfig.translate("Part") + " §6§l" + Tools.toInfo(cargo.getBase()),
                         "§c" + MarketConfig.translate("NeedToCost") + " §6§l" + cargo.getCost() * amount, "",
                         "§9" + MarketConfig.translate("YourBalance") + ": " + EconomyHandler.getBalance(getUser().getName()),
                         (canBuy() ? "§2§o" + MarketConfig.translate("Reconfirm") : "§6§o" + MarketConfig.translate("infoNotEnoughMoney"))));
         inv.setItem(8, newConfirm);
-	}
+    }
 
-	private boolean canBuy()
-	{
-		return EconomyHandler.hasMoney(getUser().getName(), amount * cargo.getCost());
-	}
+    private boolean canBuy() {
+        return EconomyHandler.hasMoney(getUser().getName(), amount * cargo.getCost());
+    }
 
-	private double getCost()
-	{
-		return amount * cargo.getCost();
-	}
+    private double getCost() {
+        return amount * cargo.getCost();
+    }
 
-	@Override
-	public void onVerifiedEvent(InventoryClickEvent event)
-	{
-		event.setCancelled(true);
-		if (event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR))
-			return;
-		//		if (event.getRawSlot() == 2)
-		//		{
-		//			++amount;
-		//			refreshButton();
-		//		}
-		//		if (event.getRawSlot() == 3)
-		//		{
-		//			if (amount - 1 > 0)
-		//				--amount;
-		//			refreshButton();
-		//		}
-		if (event.getRawSlot() == 8)
-		{
-			close();
-			if (canBuy())
-			{
-				if (cargo.tryGetCargo(getUser(), amount))
-				{
-					MarketHandler.tryBuyCargo(getUser(), cargo, getCost(), amount);
+    @Override
+    public void onVerifiedEvent(InventoryClickEvent event) {
+        event.setCancelled(true);
+        if (event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR))
+            return;
+        //		if (event.getRawSlot() == 2)
+        //		{
+        //			++amount;
+        //			refreshButton();
+        //		}
+        //		if (event.getRawSlot() == 3)
+        //		{
+        //			if (amount - 1 > 0)
+        //				--amount;
+        //			refreshButton();
+        //		}
+        if (event.getRawSlot() == 8) {
+            close();
+            if (canBuy()) {
+                if (cargo.tryGetCargo(getUser(), amount)) {
+                    MarketHandler.tryBuyCargo(getUser(), cargo, getCost(), amount);
                     getUser().sendMessage("§2" + MarketConfig.translate("infoSuccessfulBuy"));
                 }
-			}else
-			{
-				event.setCancelled(true);
-			}
-		}
-	}
+            } else {
+                event.setCancelled(true);
+            }
+        }
+    }
 
-	@Override
-	public void onClose(InventoryCloseEvent event)
-	{
+    @Override
+    public void onClose(InventoryCloseEvent event) {
 
-	}
+    }
 
-	@Override
-	public void onOpen(InventoryOpenEvent event)
-	{
+    @Override
+    public void onOpen(InventoryOpenEvent event) {
 
-	}
+    }
 
 }

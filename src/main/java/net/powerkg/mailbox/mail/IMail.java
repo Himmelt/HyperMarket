@@ -9,52 +9,44 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Date;
 
-public abstract class IMail
-{
-	protected Date date = null;
-	protected MailBox inBox = null;
-	protected String path = null;
+public abstract class IMail {
+    protected Date date = null;
+    protected MailBox inBox = null;
+    protected String path = null;
 
-	public IMail()
-	{
-	}
+    public IMail() {
+    }
 
-	public Date getDate()
-	{
-		return date;
-	}
+    public Date getDate() {
+        return date;
+    }
 
-	protected void stickInfo(ItemStack item)
-	{
-		if (date != null)
-		{
+    protected void stickInfo(ItemStack item) {
+        if (date != null) {
             Tools.addItemStackLore(item, "", "   §7§o" + MarketConfig.getDateFormat().format(date) + " " + MarketConfig.translate("Received"));
         }
-	}
+    }
 
-	public void setInBoxPathName(String str)
-	{
-		this.path = str;
-	}
+    public void setInBoxPathName(String str) {
+        this.path = str;
+    }
 
-	public String getPathName()
-	{
-		return path;
-	}
+    public String getPathName() {
+        return path;
+    }
 
-	public void encase(MailBox box)
-	{
-		this.inBox = box;
-	}
+    public void encase(MailBox box) {
+        this.inBox = box;
+    }
 
-	public abstract ItemStack getDisplay();
+    public abstract ItemStack getDisplay();
 
-	public abstract boolean click(Player player, boolean isRightClick);
+    public abstract boolean click(Player player, boolean isRightClick);
 
-	public abstract String getMark();
+    public abstract String getMark();
 
-	public abstract void write(String path, FileConfiguration file);
+    public abstract void write(String path, FileConfiguration file);
 
-	public abstract void read(String path, FileConfiguration file);
+    public abstract void read(String path, FileConfiguration file);
 
 }

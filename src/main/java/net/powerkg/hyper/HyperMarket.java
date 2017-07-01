@@ -12,18 +12,17 @@ import net.powerkg.market.handler.EconomyHandler;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class HyperMarket extends JavaPlugin
-{
-	private static HyperMarket instance;
+public class HyperMarket extends JavaPlugin {
+    private static HyperMarket instance;
 
-	private static ConsoleCommandSender console;
+    private static ConsoleCommandSender console;
 
-	/**
+    /**
      * ！如果你是新人
-     *
+     * <p>
      * 以下这些系统完全是因为强迫症并且追求扩展性
      * 你完全可以用很简单的步骤代替！
-     * **/
+     **/
 
     //金融系统
     public static final EconomyHandler economyHandler = new EconomyHandler();
@@ -34,47 +33,41 @@ public class HyperMarket extends JavaPlugin
     //玩家邮箱(存储货物)
     public static final MailBoxHandler mailboxHandler = new MailBoxHandler();
 
-	@Override
-	public void onEnable()
-	{
-		HyperMarket.instance = this;
-		console = getServer().getConsoleSender();
-
+    @Override
+    public void onEnable() {
+        HyperMarket.instance = this;
+        console = getServer().getConsoleSender();
 
         //初始化Easy-Use
         GuiHandler.init(this);
-		FastUse.init(this);
-		DataHandler.init(this);
+        FastUse.init(this);
+        DataHandler.init(this);
 
         //初始化各个系统
 
-		if (!configHandler.load(this))
-		{
+        if (!configHandler.load(this)) {
             tellConsole("§c配置文本加载失败.");
         }
 
-		if (!economyHandler.load(this))
-		{
+        if (!economyHandler.load(this)) {
             tellConsole("§c加载金融失败,插件停止加载,请确定是否安装Vault插件.");
             return;
-		}
+        }
 
-		mailboxHandler.load(this);
+        mailboxHandler.load(this);
 
-		commandHandler.load(this);
+        commandHandler.load(this);
 
-		MarketHandler.init();
-		
-		MarketCargoSaver.readCargos();
-	}
+        MarketHandler.init();
 
-	public static HyperMarket getInstance()
-	{
-		return instance;
-	}
+        MarketCargoSaver.readCargos();
+    }
 
-	public static void tellConsole(String msg)
-	{
+    public static HyperMarket getInstance() {
+        return instance;
+    }
+
+    public static void tellConsole(String msg) {
         console.sendMessage("§c[HyperMarket] §f" + msg);
     }
 }
