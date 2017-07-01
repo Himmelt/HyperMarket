@@ -1,0 +1,8 @@
+name: HyperMarket
+version: 1.0.0
+main: net.powerkg.hyper.HyperMarket
+commands:
+   HyperMarket:
+      description: HyperMarket Command.
+   HM:
+      description: HyperMarket Command.
